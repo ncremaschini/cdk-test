@@ -6,7 +6,7 @@ import { HitCounter } from '../lib/hitcounter';
 
 test('DynamoDB Table Created', () => {
     const stack = new cdk.Stack();
-    
+
     // WHEN
     new HitCounter(stack, 'MyTestConstruct', {
         downstream: new lambda.Function(stack, 'TestFunction', {
@@ -17,5 +17,9 @@ test('DynamoDB Table Created', () => {
     });
 
     // THEN
-    expect(stack).to(haveResource("AWS::DynamoDB::Table"));
+    expect(stack).to(haveResource('AWS::DynamoDB::Table', {
+        SSESpecification: {
+            SSEEnabled: true
+        }
+    }));
 });
