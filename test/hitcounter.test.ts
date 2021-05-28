@@ -4,7 +4,7 @@ import * as lambda from '@aws-cdk/aws-lambda';
 
 import { HitCounter } from '../lib/hitcounter';
 
-test('DynamoDB Table Created', () => {
+test('DynamoDB table created', () => {
     const stack = new cdk.Stack();
 
     // WHEN
@@ -24,7 +24,7 @@ test('DynamoDB Table Created', () => {
     }));
 });
 
-test('Lambda Has Environment Variables', () => {
+test('Lambda has environment variables', () => {
     const stack = new cdk.Stack();
     // WHEN
     new HitCounter(stack, 'MyTestConstruct', {
