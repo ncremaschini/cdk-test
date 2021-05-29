@@ -8,7 +8,7 @@ node_modules
 cdk.out
 
 # VSCode extension
-
+.workspace
 # Store launch config in repo but not settings
 .vscode/settings.json
 /.favorites.json
