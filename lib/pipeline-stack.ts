@@ -23,7 +23,7 @@ export class PipelineStack extends cdk.Stack {
     new CdkPipeline(this, "Pipeline", {
       pipelineName: "WorkshopPipeline",
       cloudAssemblyArtifact,
-
+      
       // Generates the source artifact from the repo we created in the last step
       sourceAction: new codepipeline_actions.CodeStarConnectionsSourceAction({
         actionName: 'Checkout',
@@ -38,7 +38,9 @@ export class PipelineStack extends cdk.Stack {
       synthAction: SimpleSynthAction.standardNpmSynth({
         sourceArtifact, // Where to get source code to build
         cloudAssemblyArtifact, // Where to place built source
-
+        environmentVariables:{
+          CONNECTION_ARN: {value: props.connection_arn}
+        },
         buildCommand: "npm run build", // Language-specific build cmd
       }),
     });
