@@ -2,13 +2,14 @@
 !jest.config.js
 *.d.ts
 node_modules
+package-lock.json
 
 # CDK asset staging directory
 .cdk.staging
 cdk.out
 
 # VSCode extension
-
+*.code-workspace
 # Store launch config in repo but not settings
 .vscode/settings.json
 /.favorites.json
