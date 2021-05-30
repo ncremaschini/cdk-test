@@ -3,12 +3,6 @@ import * as lambda from "@aws-cdk/aws-lambda";
 import * as apigw from "@aws-cdk/aws-apigateway";
 import { HitCounter } from "./hitCounter";
 import { TableViewer } from "cdk-dynamo-table-viewer";
-import { PipelineStack } from "../lib/pipeline-stack";
-
-const app = new cdk.App();
-new PipelineStack(app, "CdkPipelineStack", {
-  githubToken: process.env.GITHUB_TOKEN!,
-});
 
 export class CdkWorkshopStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
