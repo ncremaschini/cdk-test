@@ -39,6 +39,7 @@ export class PipelineStack extends cdk.Stack {
         sourceArtifact, // Where to get source code to build
         cloudAssemblyArtifact, // Where to place built source
         environmentVariables:{
+          pippo: {value: 'pluto'},
           CONNECTION_ARN: {value: props.connection_arn}
         },
         buildCommand: "npm run build", // Language-specific build cmd
