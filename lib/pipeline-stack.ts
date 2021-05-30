@@ -2,7 +2,8 @@ import * as cdk from "@aws-cdk/core";
 import * as codepipeline from "@aws-cdk/aws-codepipeline";
 import * as codepipeline_actions from "@aws-cdk/aws-codepipeline-actions";
 import { SimpleSynthAction, CdkPipeline } from "@aws-cdk/pipelines";
-import { SecretValue, StackProps } from "@aws-cdk/core";
+import { StackProps } from "@aws-cdk/core";
+import { WorkshopPipelineStage } from "./pipeline-stage";
 import * as ssm from "@aws-cdk/aws-ssm";
 
 export interface PipelineStackProps extends StackProps {
@@ -18,8 +19,8 @@ export class PipelineStack extends cdk.Stack {
       const connectionArn = ssm.StringParameter.valueForStringParameter(
         this,
         "connection_arn"
-      ); 
-      
+      );
+
       props.connection_arn = connectionArn;
     }
 
@@ -31,7 +32,7 @@ export class PipelineStack extends cdk.Stack {
 
     // The basic pipeline declaration. This sets the initial structure
     // of our pipeline
-    new CdkPipeline(this, "Pipeline", {
+    const pipeline = new CdkPipeline(this, "Pipeline", {
       pipelineName: "WorkshopPipeline",
       cloudAssemblyArtifact,
 
@@ -52,5 +53,8 @@ export class PipelineStack extends cdk.Stack {
         buildCommand: "npm run build", // Language-specific build cmd
       }),
     });
+
+    const deploy = new WorkshopPipelineStage(this, "Deploy");
+    pipeline.addApplicationStage(deploy);
   }
 }
