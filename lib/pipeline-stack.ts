@@ -5,7 +5,7 @@ import { SimpleSynthAction, CdkPipeline } from "@aws-cdk/pipelines";
 import { SecretValue, StackProps } from "@aws-cdk/core";
 
 export interface PipelineStackProps extends StackProps {
-  readonly githubToken: string;
+  readonly connection_arn: string;
 }
 
 export class PipelineStack extends cdk.Stack {
@@ -25,13 +25,13 @@ export class PipelineStack extends cdk.Stack {
       cloudAssemblyArtifact,
 
       // Generates the source artifact from the repo we created in the last step
-      sourceAction: new codepipeline_actions.GitHubSourceAction({
+      sourceAction: new codepipeline_actions.CodeStarConnectionsSourceAction({
         actionName: 'Checkout',
         output: sourceArtifact,
-        owner: "evayde",
-        repo: "cdk-api-pipeline",
-        oauthToken: SecretValue.plainText(props.githubToken),
-        trigger: codepipeline_actions.GitHubTrigger.WEBHOOK,
+        owner: "ncremaschini",
+        repo: "cdk-test",
+        branch: "main",
+        connectionArn: props.connection_arn
       }),
 
       // Builds our source code outlined above into a could assembly artifact

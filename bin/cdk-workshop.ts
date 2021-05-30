@@ -3,13 +3,12 @@ import * as cdk from "@aws-cdk/core";
 import { CdkWorkshopStack } from "../lib/cdk-workshop-stack";
 import { PipelineStack } from "../lib/pipeline-stack";
 
-if (!process.env.GITHUB_TOKEN) {
-  console.log("No Github Token present");
+if (!process.env.CONNECTION_ARN) {
+  console.log("No connection arn present");
 }
 
 const app = new cdk.App();
-new CdkWorkshopStack(app, "CdkWorkshopStack");
 
 new PipelineStack(app, "CdkPipelineStack", {
-  githubToken: process.env.GITHUB_TOKEN!,
+    connection_arn: process.env.CONNECTION_ARN!,
 });
