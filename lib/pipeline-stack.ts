@@ -1,7 +1,11 @@
 import * as cdk from "@aws-cdk/core";
 import * as codepipeline from "@aws-cdk/aws-codepipeline";
 import * as codepipeline_actions from "@aws-cdk/aws-codepipeline-actions";
-import { SimpleSynthAction, CdkPipeline } from "@aws-cdk/pipelines";
+import {
+  ShellScriptAction,
+  SimpleSynthAction,
+  CdkPipeline,
+} from "@aws-cdk/pipelines";
 import { StackProps } from "@aws-cdk/core";
 import { WorkshopPipelineStage } from "./pipeline-stage";
 import * as ssm from "@aws-cdk/aws-ssm";
@@ -55,6 +59,29 @@ export class PipelineStack extends cdk.Stack {
     });
 
     const deploy = new WorkshopPipelineStage(this, "Deploy");
-    pipeline.addApplicationStage(deploy);
+    const deployStage = pipeline.addApplicationStage(deploy);
+
+    deployStage.addActions(
+      new ShellScriptAction({
+        actionName: "TestViewerEndpoint",
+        useOutputs: {
+          ENDPOINT_URL: pipeline.stackOutput(deploy.hcViewerUrl),
+        },
+        commands: ["curl -Ssf $ENDPOINT_URL"],
+      })
+    );
+    deployStage.addActions(
+      new ShellScriptAction({
+        actionName: "TestAPIGatewayEndpoint",
+        useOutputs: {
+          ENDPOINT_URL: pipeline.stackOutput(deploy.hcEndpoint),
+        },
+        commands: [
+          "curl -Ssf $ENDPOINT_URL/",
+          "curl -Ssf $ENDPOINT_URL/hello",
+          "curl -Ssf $ENDPOINT_URL/test",
+        ],
+      })
+    );
   }
 }

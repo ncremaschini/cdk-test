@@ -5,6 +5,9 @@ import { HitCounter } from "./hitCounter";
 import { TableViewer } from "cdk-dynamo-table-viewer";
 
 export class CdkWorkshopStack extends cdk.Stack {
+  public readonly hcViewerUrl: cdk.CfnOutput;
+  public readonly hcEndpoint: cdk.CfnOutput;
+
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
     const helloFunction = new lambda.Function(this, "HelloFunction", {
@@ -17,13 +20,22 @@ export class CdkWorkshopStack extends cdk.Stack {
       downstream: helloFunction,
     });
 
-    new apigw.LambdaRestApi(this, "Endpoint", {
+    const apiGw = new apigw.LambdaRestApi(this, "Endpoint", {
       handler: helloWithCounter.handler,
     });
 
-    new TableViewer(this, "ViewHitCounter", {
+    const tableViewer = new TableViewer(this, "ViewHitCounter", {
       title: "Hello Hits",
       table: helloWithCounter.table,
+      sortBy: '-hits'
+    });
+
+    this.hcEndpoint = new cdk.CfnOutput(this, 'GatewayUrl', {
+      value: apiGw.url
+    });
+
+    this.hcViewerUrl = new cdk.CfnOutput(this, 'TableViewerUrl', {
+      value: tableViewer.endpoint
     });
   }
 }
